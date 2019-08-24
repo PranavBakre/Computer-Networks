@@ -24,7 +24,13 @@ namespace GetIPAndSubnet
                     Console.WriteLine("LocalHost");
                 Subnetting sb = new Subnetting();
                 sb.GetNetWorkDetails(ip);
-                sb.GetSubnetWorkNo();
+                sb.GetSubnetworkNo();
+                byte[] FIP=sb.GetFirstIP();
+                for(int i=0;i<4;i++)
+                {
+                    Console.Write(FIP[i] + " ");
+                }
+                Console.WriteLine();
             }
         }
     }

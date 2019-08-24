@@ -1,25 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace GetIPAndSubnet
 {
     class Subnetting
     {
-        public string IpAddress;
-        public byte[] DefaultMaskOctet;
-        public int SubnetNo;
+        string IpAddress;
+        byte[] SubnetMaskOctet;
+        int SubnetNo;
+        int host;// No. of hosts per subnet 
         public void GetNetWorkDetails(IP ip)
         {
-            DefaultMaskOctet = new byte[4];
+            SubnetMaskOctet = new byte[4];
             IpAddress = ip.IpAddress;
-            DefaultMaskOctet = ip.SubnetOctet;
+            SubnetMaskOctet = ip.SubnetOctet;
             
         }
 
-        public int GetSubnetWorkNo()//Get Subnet Network No host
+        public int GetSubnetworkNo()//Get Subnet Network No host
         {
-            int i,j, host=1;
+            int i, j;
+            host = 1;
             do
             {
                 Console.WriteLine("Enter the number of Subnet");
@@ -33,16 +33,15 @@ namespace GetIPAndSubnet
             for (i=0;i< subnetbits.Length / 8;i++)
             {
                 tempoctet[i] = Convert.ToByte(subnetbits.Substring(i*8,8),2);
-                Console.WriteLine(tempoctet[i]);
             }
 
             for (i=0;i<4;i++)
             {
-                if (DefaultMaskOctet[i]!=255)
+                if (SubnetMaskOctet[i]!=255)
                 {
                     for (j = 0; j < tempoctet.Length; j++)
                     {
-                        DefaultMaskOctet[i] = tempoctet[j];
+                        SubnetMaskOctet[i] = tempoctet[j];
                         i++;
                     }
                 }
@@ -66,14 +65,14 @@ namespace GetIPAndSubnet
             }
             */
             for (i = 0; i < 4; i++)
-                Console.Write($"{DefaultMaskOctet[i]} ");
+                Console.Write($"{SubnetMaskOctet[i]} ");
             Console.WriteLine();
             //Total No of hosts in the network/No of hosts per subnet 
             for (i=0;i<4;i++)
             {
-                if (DefaultMaskOctet[i] != 255)
+                if (SubnetMaskOctet[i] != 255)
                 {
-                    host *= Convert.ToInt32((byte)~DefaultMaskOctet[i])+1;
+                    host *= Convert.ToInt32((byte)~SubnetMaskOctet[i])+1;
                 }
             }
 
@@ -82,6 +81,25 @@ namespace GetIPAndSubnet
             return 0;
         }
 
+        public byte[] GetFirstIP()
+        {
+            int i;
+            byte[] FipOctet = new byte[4];
+            string[] IpOctetS = new string[4];
+            byte[] IpOctet = new byte[4];
+
+            IpOctetS = IpAddress.Split('.');
+            
+            for (i=0;i<4;i++)
+            {
+                IpOctet[i] = Convert.ToByte(IpOctetS[i]);
+                FipOctet[i] = Convert.ToByte(((int)IpOctet[i] & (int)SubnetMaskOctet[i]));
+            }
+
+            return FipOctet;
+
+
+        }
 
 
 
