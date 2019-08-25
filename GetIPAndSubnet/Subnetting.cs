@@ -25,6 +25,7 @@ namespace GetIPAndSubnet
                 Console.WriteLine("Enter the number of Subnet");
                 
             }while(!int.TryParse(Console.ReadLine(), out SubnetNo));
+
             int bit=(1 << Convert.ToString(SubnetNo-1, 2).Length)-1;
 
             string subnetbits=Convert.ToString(bit,2);
@@ -35,11 +36,11 @@ namespace GetIPAndSubnet
                 tempoctet[i] = Convert.ToByte(subnetbits.Substring(i*8,8),2);
             }
 
-            for (i=0;i<4;i++)
+            for (i=0,j=0;i<4;i++)
             {
                 if (SubnetMaskOctet[i]!=255)
                 {
-                    for (j = 0; j < tempoctet.Length; j++)
+                    for (; j < tempoctet.Length; j++)
                     {
                         SubnetMaskOctet[i] = tempoctet[j];
                         i++;
@@ -93,7 +94,7 @@ namespace GetIPAndSubnet
             for (i=0;i<4;i++)
             {
                 IpOctet[i] = Convert.ToByte(IpOctetS[i]);
-                FipOctet[i] = Convert.ToByte(((int)IpOctet[i] & (int)SubnetMaskOctet[i]));
+                FipOctet[i] = Convert.ToByte((IpOctet[i] & SubnetMaskOctet[i]));
             }
 
             return FipOctet;
@@ -101,6 +102,40 @@ namespace GetIPAndSubnet
 
         }
 
+        public byte[] GetSubnetLastIP()
+        {
+            int i;
+            byte[] LipOctet = new byte[4];
+            string[] IpOctetS = new string[4];
+            byte[] IpOctet = new byte[4];
+
+            IpOctetS = IpAddress.Split('.');
+
+            for (i = 0; i < 4; i++)
+            {
+                IpOctet[i] = Convert.ToByte(IpOctetS[i]);
+                IpOctet[i] = Convert.ToByte((IpOctet[i] & SubnetMaskOctet[i]));
+                LipOctet[i] = 0;
+            }
+
+            int hostbitI = host;
+            i = 4;
+            while(hostbitI>0)
+            {
+
+                LipOctet[i] = Convert.ToByte((hostbitI%256)-1);
+                hostbitI /= 256;
+
+                i--;
+            }
+
+            for (i = 0; i < 4; i++)
+            {
+                LipOctet[i] = Convert.ToByte(IpOctet[i] & LipOctet[i]);
+            }
+            return LipOctet;
+
+        }
 
 
 

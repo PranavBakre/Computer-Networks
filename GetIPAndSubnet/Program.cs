@@ -26,10 +26,16 @@ namespace GetIPAndSubnet
                 sb.GetNetWorkDetails(ip);
                 sb.GetSubnetworkNo();
                 byte[] FIP=sb.GetFirstIP();
+               // byte[] LIP = sb.GetSubnetLastIP();
                 for(int i=0;i<4;i++)
                 {
                     Console.Write(FIP[i] + " ");
                 }
+                Console.WriteLine();
+                /*for (int i = 0; i < 4; i++)
+                {
+                    Console.Write(LIP[i] + " ");
+                }*/
                 Console.WriteLine();
             }
         }
