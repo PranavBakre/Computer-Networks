@@ -22,10 +22,11 @@ namespace GetIPAndSubnet
                     Console.WriteLine($"Class {ipClass.ToString().ToUpper()}");
                 if (ipClass == 'l')
                     Console.WriteLine("LocalHost");
+
                 Subnetting sb = new Subnetting();
                 sb.GetNetWorkDetails(ip);
                 sb.GetSubnetworkNo();
-                byte[] FIP=sb.GetFirstIP();
+                byte[] FIP=sb.GetFirstIP(2);
                 byte[] LIP = sb.GetSubnetLastIP();
                 for(int i=0;i<4;i++)
                 {

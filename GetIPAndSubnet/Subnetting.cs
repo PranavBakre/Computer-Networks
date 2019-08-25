@@ -6,14 +6,15 @@ namespace GetIPAndSubnet
     {
         string IpAddress;
         byte[] SubnetMaskOctet;
+        byte[] DefaultMaskOctet;
         int SubnetNo;
         int host;// No. of hosts per subnet 
         public void GetNetWorkDetails(IP ip)
         {
-            SubnetMaskOctet = new byte[4];
+            DefaultMaskOctet = new byte[4];
             IpAddress = ip.IpAddress;
             SubnetMaskOctet = ip.SubnetOctet;
-            
+            SubnetMaskOctet.CopyTo(DefaultMaskOctet,0);
         }
 
         public int GetSubnetworkNo()//Get Subnet Network No host
@@ -82,19 +83,45 @@ namespace GetIPAndSubnet
             return 0;
         }
 
-        public byte[] GetFirstIP()
+        public byte[] GetFirstIP(int subnetno)
         {
-            int i;
+            int i,j, subnetbytes = 0, subnetposition = 1;
             byte[] FipOctet = new byte[4];
             string[] IpOctetS = new string[4];
             byte[] IpOctet = new byte[4];
 
             IpOctetS = IpAddress.Split('.');
+            byte[] subnet = new byte[4];
+            string[] subnets = new string[4];
+            for (i=0;i<4;i++)
+            {
+                subnet[i] = (byte)(SubnetMaskOctet[i] ^ DefaultMaskOctet[i]);
+            }
+            for (i = 3; i >=0; i--)
+            {
+                
+                if (subnet[i]!=0)
+                {
+                    subnets[i] = Convert.ToString(subnet[i], 2);
+                    subnetposition = i;
+                    subnetbytes++;
+                }
+            }
+
+            string subnetbits = Convert.ToString(subnetno, 2).PadLeft(Convert.ToString(SubnetNo,2).Length-1,'0').PadRight(subnetbytes*8,'0');
+            Console.WriteLine(subnetbits) ;
             
+
             for (i=0;i<4;i++)
             {
                 IpOctet[i] = Convert.ToByte(IpOctetS[i]);
                 FipOctet[i] = Convert.ToByte((IpOctet[i] & SubnetMaskOctet[i]));
+            }
+
+            for (i = subnetposition,j=0; i < subnetposition + subnetbytes&& j<subnetbytes; i++,j++)
+            {
+                
+                FipOctet[i] |= Convert.ToByte(subnetbits.Substring(j * 8, 8),2);
             }
 
             return FipOctet;
