@@ -119,11 +119,11 @@ namespace GetIPAndSubnet
             }
 
             int hostbitI = host;
-            i = 4;
+            i = 3;
             while(hostbitI>0)
             {
-
-                LipOctet[i] = Convert.ToByte((hostbitI%256)-1);
+                int vv = hostbitI%256 - 1;
+                LipOctet[i] = (byte)(vv);
                 hostbitI /= 256;
 
                 i--;
@@ -131,7 +131,7 @@ namespace GetIPAndSubnet
 
             for (i = 0; i < 4; i++)
             {
-                LipOctet[i] = Convert.ToByte(IpOctet[i] & LipOctet[i]);
+                LipOctet[i] = Convert.ToByte(IpOctet[i] | LipOctet[i]);
             }
             return LipOctet;
 
