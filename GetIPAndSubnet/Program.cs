@@ -26,17 +26,7 @@ namespace GetIPAndSubnet
                 Subnetting sb = new Subnetting();
                 sb.GetNetWorkDetails(ip);
                 sb.GetSubnetworkNo();
-                byte[] FIP=sb.GetFirstIP(2);
-                byte[] LIP = sb.GetSubnetLastIP();
-                for(int i=0;i<4;i++)
-                {
-                    Console.Write(FIP[i] + " ");
-                }
-                Console.WriteLine();
-                for (int i = 0; i < 4; i++)
-                {
-                    Console.Write(LIP[i] + " ");
-                }
+                sb.GetFirstLastIPSubnet();
                 Console.WriteLine();
             }
         }

@@ -28,7 +28,8 @@ namespace GetIPAndSubnet
             }while(!int.TryParse(Console.ReadLine(), out SubnetNo));
 
             int bit=(1 << Convert.ToString(SubnetNo-1, 2).Length)-1;
-
+            Console.WriteLine(bit);
+            SubnetNo = bit+1;
             string subnetbits=Convert.ToString(bit,2);
             subnetbits=subnetbits.PadRight(((subnetbits.Length/8)+1)*8,'0');
             byte[] tempoctet = new byte[subnetbits.Length / 8];
@@ -83,7 +84,7 @@ namespace GetIPAndSubnet
             return 0;
         }
 
-        public byte[] GetFirstIP(int subnetno)
+        public byte[] GetSubnetFirstIP(int subnetno)
         {
             int i,j, subnetbytes = 0, subnetposition = 1;
             byte[] FipOctet = new byte[4];
@@ -92,7 +93,6 @@ namespace GetIPAndSubnet
 
             IpOctetS = IpAddress.Split('.');
             byte[] subnet = new byte[4];
-            string[] subnets = new string[4];
             for (i=0;i<4;i++)
             {
                 subnet[i] = (byte)(SubnetMaskOctet[i] ^ DefaultMaskOctet[i]);
@@ -102,7 +102,6 @@ namespace GetIPAndSubnet
                 
                 if (subnet[i]!=0)
                 {
-                    subnets[i] = Convert.ToString(subnet[i], 2);
                     subnetposition = i;
                     subnetbytes++;
                 }
@@ -129,12 +128,29 @@ namespace GetIPAndSubnet
 
         }
 
-        public byte[] GetSubnetLastIP()
+        public byte[] GetSubnetLastIP(int subnetno)
         {
-            int i;
+            int i, j, subnetbytes = 0, subnetposition = 1;
             byte[] LipOctet = new byte[4];
             string[] IpOctetS = new string[4];
             byte[] IpOctet = new byte[4];
+            byte[] subnet = new byte[4];
+            for (i = 0; i < 4; i++)
+            {
+                subnet[i] = (byte)(SubnetMaskOctet[i] ^ DefaultMaskOctet[i]);
+            }
+            for (i = 3; i >= 0; i--)
+            {
+
+                if (subnet[i] != 0)
+                {
+                    subnetposition = i;
+                    subnetbytes++;
+                }
+            }
+
+            string subnetbits = Convert.ToString(subnetno, 2).PadLeft(Convert.ToString(SubnetNo, 2).Length - 1, '0').PadRight(subnetbytes * 8, '0');
+            Console.WriteLine(subnetbits);
 
             IpOctetS = IpAddress.Split('.');
 
@@ -160,10 +176,39 @@ namespace GetIPAndSubnet
             {
                 LipOctet[i] = Convert.ToByte(IpOctet[i] | LipOctet[i]);
             }
+
+            for (i = subnetposition, j = 0; i < subnetposition + subnetbytes && j < subnetbytes; i++, j++)
+            {
+
+                LipOctet[i] |= Convert.ToByte(subnetbits.Substring(j * 8, 8), 2);
+            }
+
             return LipOctet;
 
         }
 
+
+        public void GetFirstLastIPSubnet()
+        {
+            Console.WriteLine(SubnetNo);
+            for (int IPiterator = 0; IPiterator < SubnetNo; IPiterator++)
+            {
+                Console.WriteLine($"Subnet : {IPiterator}");
+                byte[] FIP = this.GetSubnetFirstIP(IPiterator);
+                byte[] LIP = this.GetSubnetLastIP(IPiterator);
+                Console.WriteLine("1st IP Address:");
+                for (int i = 0; i < 4; i++)
+                {
+                    Console.Write(FIP[i] + " ");
+                }
+                Console.WriteLine("\nLast IP Address:");
+                for (int i = 0; i < 4; i++)
+                {
+                    Console.Write(LIP[i] + " ");
+                }
+                Console.WriteLine();
+            }
+        }
 
 
     }
