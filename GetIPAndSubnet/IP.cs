@@ -7,18 +7,21 @@ namespace GetIPAndSubnet
     class IP
     {
         string ipAddress;
-        public string IpAddress{
-                get { return ipAddress; } set {ipAddress = GetIP();}
-                               }
-        string[] IPOctet;// = new string[4];
-        int IPOctet0;
+        public string IpAddress//Property returns iPAddress to other classes
+        {
+            get { return ipAddress; }
+            set {ipAddress = GetIP();
+                }
+        }
 
-        byte[] subnetOctet;
-        public byte[] SubnetOctet { get { return subnetOctet; } }
+        string[] IPOctet;//Array of all IP Octet
+        int IPOctet0;//First IP Octet
+
+        public byte[] SubnetOctet { get; private set; }//Auto property
         char IPClass;
 
 
-        public string GetIP()
+        public string GetIP()//Gets the IP address from the user. Returns error if incorrect IP
         {
             Console.WriteLine("Enter the IP Address");
             ipAddress = Console.ReadLine();
@@ -34,7 +37,7 @@ namespace GetIPAndSubnet
                 return "Error";
             return ipAddress;
         }
-        public char GetClass()
+        public char GetClass()// Returns IP Class
         {
             if (IPOctet0.CompareTo(126) <= 0)
             {
@@ -71,24 +74,24 @@ namespace GetIPAndSubnet
         }
         public string ReturnSubnet()
         {
-            subnetOctet = new Byte[4];
-            subnetOctet[0] = 255;
+            SubnetOctet = new Byte[4];
+            SubnetOctet[0] = 255;
             switch (IPClass)
             {
                 case 'a':
-                    subnetOctet[1] = 0;
-                    subnetOctet[2] = 0;
-                    subnetOctet[3] = 0;
+                    SubnetOctet[1] = 0;
+                    SubnetOctet[2] = 0;
+                    SubnetOctet[3] = 0;
                     break;
                 case 'b':
-                    subnetOctet[1] = 255;
-                    subnetOctet[2] = 0;
-                    subnetOctet[3] = 0;
+                    SubnetOctet[1] = 255;
+                    SubnetOctet[2] = 0;
+                    SubnetOctet[3] = 0;
                     break;
                 case 'c':
-                    subnetOctet[1] = 255;
-                    subnetOctet[2] = 255;
-                    subnetOctet[3] = 0;
+                    SubnetOctet[1] = 255;
+                    SubnetOctet[2] = 255;
+                    SubnetOctet[3] = 0;
                     break;
                 default:
                     return "Error";
@@ -97,10 +100,10 @@ namespace GetIPAndSubnet
 
             StringBuilder sb = new StringBuilder();
             int pt = 0;
-            foreach (byte i in subnetOctet)
+            foreach (byte i in SubnetOctet)
             {
 
-                pt = pt + 1;
+                pt++;
                 sb.Append(i);
                 if (pt <= 3)
                 {
@@ -117,7 +120,7 @@ namespace GetIPAndSubnet
             string[] SOctet = new string[4];
             for (int i=0;i<4;i++)
             {
-                SOctet[i] = Convert.ToString(subnetOctet[i], 2).PadLeft(8,'0');
+                SOctet[i] = Convert.ToString(SubnetOctet[i], 2).PadLeft(8,'0');
             }
             return SOctet;
         }
