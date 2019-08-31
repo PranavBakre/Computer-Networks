@@ -76,8 +76,8 @@ func (G *Graph) AddData() { //Adding the data into the map
 				fmt.Scanln(&G.Graph[i].Distance[j])
 				G.Graph[j].Distance[i] = G.Graph[i].Distance[j]
 				if G.Graph[i].Distance[j] != 999 {
-					G.Graph[i].Neighbour[j] = 1 //G.Neighbour[i][j] = 1
-					G.Graph[j].Neighbour[i] = 1 //G.Neighbour[j][i] = G.Neighbour[i][j]
+					G.Graph[i].Neighbour[j] = 1 
+					G.Graph[j].Neighbour[i] = 1 
 					G.Graph[i].Next[j] = j
 					G.Graph[j].Next[i] = i
 				}
@@ -102,12 +102,11 @@ func (G *Graph) Display() { //Display the node data
 
 func (G *Graph) UpdateData(Node int) { //Function to update the distance vector at every node
 	for i := 0; i < G.NodeNumber; i++ {
-		if i != Node && G.Graph[Node].Distance[i] > G.Graph[Node].UpdateDistance[i] { //if i != Node && G.Graph[Node].Distance[i] > G.Update[Node].Distance[i] {
-			G.Graph[Node].Distance[i] = G.Graph[Node].UpdateDistance[i] //G.Update[Node].Distance[i]
-			G.Graph[Node].Next[i] = G.Graph[Node].UpdateNext[i]         //G.Update[Node].Next[i]
+		if i != Node && G.Graph[Node].Distance[i] > G.Graph[Node].UpdateDistance[i] {
+			G.Graph[Node].Distance[i] = G.Graph[Node].UpdateDistance[i] 
+			G.Graph[Node].Next[i] = G.Graph[Node].UpdateNext[i]  
 		}
 	}
-	//G.IsUpdatePresent[Node] = false
 	G.Graph[Node].IsUpdatePresent = false
 }
 
@@ -115,12 +114,9 @@ func (G *Graph) SendData(wg *sync.WaitGroup, Sender int, Node int) { //Concurren
 	for i := 0; i < G.NodeNumber; i++ {
 		if i != Node {
 			v := G.Graph[Sender].Distance[i] + G.Graph[Sender].Distance[Node]
-			if v < G.Graph[Node].UpdateDistance[i] { //G.Update[Node].Distance[i] {
-				//G.Update[Node].Distance[i] = v
+			if v < G.Graph[Node].UpdateDistance[i] { 
 				G.Graph[Node].UpdateDistance[i] = v
-				//G.Update[Node].Next[i] = Sender
 				G.Graph[Node].UpdateNext[i] = Sender
-				//G.IsUpdatePresent[Node] = true
 				G.Graph[Node].IsUpdatePresent = true
 			}
 		}
@@ -132,7 +128,7 @@ func (G *Graph) Run() { //Emulate the running of distance vector
 	var k int
 	var wg sync.WaitGroup
 	for j := 0; j < G.NodeNumber; j++ {
-		if G.Graph[0].Neighbour[j] == 1 { //if G.Neighbour[0][j] == 1 {
+		if G.Graph[0].Neighbour[j] == 1 {
 			wg.Add(1)
 			go G.SendData(&wg, 0, j)
 
@@ -140,11 +136,11 @@ func (G *Graph) Run() { //Emulate the running of distance vector
 	}
 	wg.Wait()
 	for i := 0; i < G.NodeNumber; i = (i + 1) % G.NodeNumber {
-		if G.Graph[i].IsUpdatePresent { //G.IsUpdatePresent[i] {
+		if G.Graph[i].IsUpdatePresent { 
 			G.UpdateData(i)
 
 			for j := 0; j < G.NodeNumber; j++ {
-				if G.Graph[i].Neighbour[j] == 1 { //if G.Neighbour[i][j] == 1 {
+				if G.Graph[i].Neighbour[j] == 1 {
 					wg.Add(1)
 					G.SendData(&wg, i, j)
 
@@ -182,7 +178,7 @@ func (G *Graph) ChangeData() { //Change the data of the nodes to indicate broken
 	}
 	for ii := 0; ii < G.NodeNumber; ii++ {
 		for jj := 0; jj < G.NodeNumber; jj++ {
-			G.Graph[ii].UpdateDistance[jj] = 999 //G.Update[ii].Distance[jj] = 999
+			G.Graph[ii].UpdateDistance[jj] = 999 
 		}
 	}
 }
