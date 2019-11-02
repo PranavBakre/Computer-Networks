@@ -3,7 +3,7 @@ package graph
 import (
 	"fmt"
 	"sync"
-	//	"text/scanner"
+
 )
 
 type Node struct { //Contents of every node

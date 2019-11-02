@@ -7,8 +7,8 @@ namespace GetIPAndSubnet
     {
         public static void Main(string[] args)
         {
-            IP ip = new IP(); ;
-            Boolean p = ip.GetIP().Equals("Error");
+            IP ip = new IP(); 
+            Boolean p = ip.IpAddress.Equals("Error");
             if (!p)
             {
                 char ipClass = ip.GetClass();

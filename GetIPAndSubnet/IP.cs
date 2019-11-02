@@ -6,13 +6,7 @@ namespace GetIPAndSubnet
 
     class IP
     {
-        string ipAddress;
-        public string IpAddress//Property returns iPAddress to other classes
-        {
-            get { return ipAddress; }
-            set {ipAddress = GetIP();
-                }
-        }
+        public string IpAddress { get; set; }//Property returns iPAddress to other classes
 
         string[] IPOctet;//Array of all IP Octet
         int IPOctet0;//First IP Octet
@@ -20,22 +14,33 @@ namespace GetIPAndSubnet
         public byte[] SubnetOctet { get; private set; }//Auto property
         char IPClass;
 
+        public IP()
+        {
+            GetIP();
+        }
 
+        
         public string GetIP()//Gets the IP address from the user. Returns error if incorrect IP
         {
             Console.WriteLine("Enter the IP Address");
-            ipAddress = Console.ReadLine();
+            IpAddress = Console.ReadLine();
 
-            IPOctet = ipAddress.Split('.');
+            IPOctet = IpAddress.Split('.');
             if (IPOctet.Length != 4)
+            {
+                IpAddress = "Error";
                 return "Error";
+            }
             IPOctet0 = Convert.ToInt32(IPOctet[0]);
             if (IPOctet0.CompareTo(254) > 0 ||
-                    Convert.ToInt32(IPOctet[1]).CompareTo(254) > 0 || 
+                    Convert.ToInt32(IPOctet[1]).CompareTo(254) > 0 ||
                         Convert.ToInt32(IPOctet[2]).CompareTo(254) > 0 ||
-                            Convert.ToInt32(IPOctet[3]).CompareTo(254) > 0 )
+                            Convert.ToInt32(IPOctet[3]).CompareTo(254) > 0)
+            {
+                IpAddress = "Error";
                 return "Error";
-            return ipAddress;
+            }
+            return IpAddress;
         }
         public char GetClass()// Returns IP Class
         {
